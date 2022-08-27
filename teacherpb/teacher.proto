@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package teacherpb;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/bektosh03/crmprotos/teacherpb";
+
+service TeacherService {
+    rpc RegisterTeacher(RegisterTeacherRequest) returns (Teacher);
+    rpc CreateSubject(CreateSubjectRequest) returns (Subject);
+    rpc GetTeacher(GetTeacherRequest) returns (Teacher);
+    rpc GetSubject(GetSubjectRequest) returns (Subject);
+    rpc DeleteTeacher(DeleteTeacherRequest) returns (google.protobuf.Empty);
+    rpc DeleteSubject(DeleteSubjectRequest) returns (google.protobuf.Empty);
+    rpc ListTeachers(ListTeachersRequest) returns (ListTeachersResponse);
+    rpc ListSubjects(ListSubjectsRequest) returns (ListSubjectsResponse);
+}
+
+message Teacher {
+    string id = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+    string phone_number = 5;
+    string subject_id = 6;
+}
+
+message RegisterTeacherRequest {
+    string first_name = 1;
+    string last_name = 2;
+    string email = 3;
+    string phone_number = 4;
+    string subject_id = 5;
+}
+
+message Subject {
+    string id = 1;
+    string name = 2;
+    string description = 3;
+}
+
+message CreateSubjectRequest {
+    string name = 1;
+    string description = 2;
+}
+
+message GetTeacherRequest {
+    string teacher_id = 1;
+}
+
+message GetSubjectRequest {
+    string subject_id = 1;
+}
+
+message DeleteTeacherRequest {
+    string teacher_id = 1;
+}
+
+message DeleteSubjectRequest {
+    string subject_id = 1;
+}
+
+message ListTeachersRequest {
+    int32 page = 1;
+    int32 limit = 2;
+}
+
+message ListTeachersResponse {
+    repeated Teacher teachers = 1;
+}
+
+message ListSubjectsRequest {
+    int32 page = 1;
+    int32 limit = 2;
+    string search = 3;
+}
+
+message ListSubjectsResponse {
+    repeated Subject subjects = 1;
+}
