@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+package schedulepb;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/bektosh03/crmprotos/schedulepb";
+
+service ScheduleService {
+    rpc CreateSchedule (CreateScheduleRequest) returns (Schedule);
+    rpc GetSchedule (GetScheduleRequest) returns (Schedule);
+    rpc UpdateSchedule (Schedule) returns (Schedule);
+    rpc DeleteSchedule (DeleteScheduleRequest) returns (google.protobuf.Empty);
+    rpc GetFullScheduleForGroup (GetFullScheduleForGroupRequest) returns (ScheduleList);
+    rpc GetSpecificDateScheduleForGroup (GetSpecificDateScheduleForGroupRequest) returns (ScheduleList);
+    rpc GetFullScheduleForTeacher (GetFullScheduleForTeacherRequest) returns (ScheduleList);
+    rpc GetSpecificDateScheduleForTeacher (GetSpecificDateScheduleForTeacherRequest) returns (ScheduleList);
+}
+
+enum Weekday {
+    MONDAY = 0;
+    TUESDAY = 1;
+    WEDNESDAY = 2;
+    THURSDAY = 3;
+    FRIDAY = 4;
+    SATURDAY = 5;
+    SUNDAY = 6;
+}
+
+message CreateScheduleRequest {
+    string group_id = 1;
+    string subject_id = 2;
+    string teacher_id = 3;
+    Weekday weekday = 4;
+    int32 lesson_number = 5;
+}
+
+message Schedule {
+    string id = 1;
+    string group_id = 2;
+    string subject_id = 3;
+    string teacher_id = 4;
+    Weekday weekday = 5;
+    int32 lesson_number = 6;
+}
+
+message GetScheduleRequest {
+    string schedule_id = 1;
+}
+
+message DeleteScheduleRequest {
+    string schedule_id = 1;
+}
+
+message GetFullScheduleForGroupRequest {
+    string group_id = 1;
+}
+
+message GetSpecificDateScheduleForGroupRequest {
+    string group_id = 1;
+    google.protobuf.Timestamp date = 2;
+}
+
+message ScheduleList {
+    repeated Schedule schedules = 1;
+}
+
+message GetFullScheduleForTeacherRequest {
+    string teacher_id = 1;
+}
+
+message GetSpecificDateScheduleForTeacherRequest {
+    string teacher_id = 1;
+    google.protobuf.Timestamp date = 2;
+}
