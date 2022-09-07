@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package journalpb;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/bektosh03/crmprotos/journalpb";
+
+service JournalService {
+  rpc CreateJournal (CreateJournalRequest) returns (Journal);
+  rpc GetJournal (GetJournalRequest) returns (Journal);
+  rpc UpdateJournal (Journal) returns (Journal);
+  rpc DeleteJournal (DeleteJournalRequest) returns (google.protobuf.Empty);
+}
+
+message CreateJournalRequest {
+  string schedule_id = 1;
+  string student_id = 2;
+  bool attended = 3;
+  int32 mark = 4;
+}
+
+message Journal {
+  string id = 1;
+  string schedule_id = 2;
+  string student_id = 3;
+  bool attended = 4;
+  int32 mark = 5;
+}
+
+message GetJournalRequest {
+  string journal_id = 1;
+}
+
+message DeleteJournalRequest {
+  string journal_id = 1;
+}
