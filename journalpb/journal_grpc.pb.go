@@ -27,6 +27,9 @@ type JournalServiceClient interface {
 	GetJournal(ctx context.Context, in *GetJournalRequest, opts ...grpc.CallOption) (*Journal, error)
 	UpdateJournal(ctx context.Context, in *Journal, opts ...grpc.CallOption) (*Journal, error)
 	DeleteJournal(ctx context.Context, in *DeleteJournalRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	MarkStudent(ctx context.Context, in *MarkStudentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	SetStudentAttendance(ctx context.Context, in *SetStudentAttendanceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetStudentMarks(ctx context.Context, in *GetStudentMarksRequest, opts ...grpc.CallOption) (*MarkList, error)
 }
 
 type journalServiceClient struct {
@@ -73,6 +76,33 @@ func (c *journalServiceClient) DeleteJournal(ctx context.Context, in *DeleteJour
 	return out, nil
 }
 
+func (c *journalServiceClient) MarkStudent(ctx context.Context, in *MarkStudentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/journalpb.JournalService/MarkStudent", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *journalServiceClient) SetStudentAttendance(ctx context.Context, in *SetStudentAttendanceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/journalpb.JournalService/SetStudentAttendance", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *journalServiceClient) GetStudentMarks(ctx context.Context, in *GetStudentMarksRequest, opts ...grpc.CallOption) (*MarkList, error) {
+	out := new(MarkList)
+	err := c.cc.Invoke(ctx, "/journalpb.JournalService/GetStudentMarks", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // JournalServiceServer is the server API for JournalService service.
 // All implementations must embed UnimplementedJournalServiceServer
 // for forward compatibility
@@ -81,6 +111,9 @@ type JournalServiceServer interface {
 	GetJournal(context.Context, *GetJournalRequest) (*Journal, error)
 	UpdateJournal(context.Context, *Journal) (*Journal, error)
 	DeleteJournal(context.Context, *DeleteJournalRequest) (*emptypb.Empty, error)
+	MarkStudent(context.Context, *MarkStudentRequest) (*emptypb.Empty, error)
+	SetStudentAttendance(context.Context, *SetStudentAttendanceRequest) (*emptypb.Empty, error)
+	GetStudentMarks(context.Context, *GetStudentMarksRequest) (*MarkList, error)
 	mustEmbedUnimplementedJournalServiceServer()
 }
 
@@ -99,6 +132,15 @@ func (UnimplementedJournalServiceServer) UpdateJournal(context.Context, *Journal
 }
 func (UnimplementedJournalServiceServer) DeleteJournal(context.Context, *DeleteJournalRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteJournal not implemented")
+}
+func (UnimplementedJournalServiceServer) MarkStudent(context.Context, *MarkStudentRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MarkStudent not implemented")
+}
+func (UnimplementedJournalServiceServer) SetStudentAttendance(context.Context, *SetStudentAttendanceRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetStudentAttendance not implemented")
+}
+func (UnimplementedJournalServiceServer) GetStudentMarks(context.Context, *GetStudentMarksRequest) (*MarkList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStudentMarks not implemented")
 }
 func (UnimplementedJournalServiceServer) mustEmbedUnimplementedJournalServiceServer() {}
 
@@ -185,6 +227,60 @@ func _JournalService_DeleteJournal_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JournalService_MarkStudent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MarkStudentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JournalServiceServer).MarkStudent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/journalpb.JournalService/MarkStudent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JournalServiceServer).MarkStudent(ctx, req.(*MarkStudentRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _JournalService_SetStudentAttendance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetStudentAttendanceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JournalServiceServer).SetStudentAttendance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/journalpb.JournalService/SetStudentAttendance",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JournalServiceServer).SetStudentAttendance(ctx, req.(*SetStudentAttendanceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _JournalService_GetStudentMarks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStudentMarksRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JournalServiceServer).GetStudentMarks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/journalpb.JournalService/GetStudentMarks",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JournalServiceServer).GetStudentMarks(ctx, req.(*GetStudentMarksRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // JournalService_ServiceDesc is the grpc.ServiceDesc for JournalService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -207,6 +303,18 @@ var JournalService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteJournal",
 			Handler:    _JournalService_DeleteJournal_Handler,
+		},
+		{
+			MethodName: "MarkStudent",
+			Handler:    _JournalService_MarkStudent_Handler,
+		},
+		{
+			MethodName: "SetStudentAttendance",
+			Handler:    _JournalService_SetStudentAttendance_Handler,
+		},
+		{
+			MethodName: "GetStudentMarks",
+			Handler:    _JournalService_GetStudentMarks_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

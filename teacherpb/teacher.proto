@@ -10,6 +10,7 @@ service TeacherService {
     rpc RegisterTeacher(RegisterTeacherRequest) returns (Teacher);
     rpc CreateSubject(CreateSubjectRequest) returns (Subject);
     rpc GetTeacher(GetTeacherRequest) returns (Teacher);
+    rpc UpdateTeacher(Teacher) returns (Teacher);
     rpc GetSubject(GetSubjectRequest) returns (Subject);
     rpc DeleteTeacher(DeleteTeacherRequest) returns (google.protobuf.Empty);
     rpc DeleteSubject(DeleteSubjectRequest) returns (google.protobuf.Empty);
@@ -46,7 +47,11 @@ message CreateSubjectRequest {
 }
 
 message GetTeacherRequest {
-    string teacher_id = 1;
+    oneof by {
+        string teacher_id = 1;
+        string email = 2;
+        string phone_number = 3;
+    }
 }
 
 message GetSubjectRequest {

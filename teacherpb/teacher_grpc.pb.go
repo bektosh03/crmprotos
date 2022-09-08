@@ -26,6 +26,7 @@ type TeacherServiceClient interface {
 	RegisterTeacher(ctx context.Context, in *RegisterTeacherRequest, opts ...grpc.CallOption) (*Teacher, error)
 	CreateSubject(ctx context.Context, in *CreateSubjectRequest, opts ...grpc.CallOption) (*Subject, error)
 	GetTeacher(ctx context.Context, in *GetTeacherRequest, opts ...grpc.CallOption) (*Teacher, error)
+	UpdateTeacher(ctx context.Context, in *Teacher, opts ...grpc.CallOption) (*Teacher, error)
 	GetSubject(ctx context.Context, in *GetSubjectRequest, opts ...grpc.CallOption) (*Subject, error)
 	DeleteTeacher(ctx context.Context, in *DeleteTeacherRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteSubject(ctx context.Context, in *DeleteSubjectRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -62,6 +63,15 @@ func (c *teacherServiceClient) CreateSubject(ctx context.Context, in *CreateSubj
 func (c *teacherServiceClient) GetTeacher(ctx context.Context, in *GetTeacherRequest, opts ...grpc.CallOption) (*Teacher, error) {
 	out := new(Teacher)
 	err := c.cc.Invoke(ctx, "/teacherpb.TeacherService/GetTeacher", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *teacherServiceClient) UpdateTeacher(ctx context.Context, in *Teacher, opts ...grpc.CallOption) (*Teacher, error) {
+	out := new(Teacher)
+	err := c.cc.Invoke(ctx, "/teacherpb.TeacherService/UpdateTeacher", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -120,6 +130,7 @@ type TeacherServiceServer interface {
 	RegisterTeacher(context.Context, *RegisterTeacherRequest) (*Teacher, error)
 	CreateSubject(context.Context, *CreateSubjectRequest) (*Subject, error)
 	GetTeacher(context.Context, *GetTeacherRequest) (*Teacher, error)
+	UpdateTeacher(context.Context, *Teacher) (*Teacher, error)
 	GetSubject(context.Context, *GetSubjectRequest) (*Subject, error)
 	DeleteTeacher(context.Context, *DeleteTeacherRequest) (*emptypb.Empty, error)
 	DeleteSubject(context.Context, *DeleteSubjectRequest) (*emptypb.Empty, error)
@@ -140,6 +151,9 @@ func (UnimplementedTeacherServiceServer) CreateSubject(context.Context, *CreateS
 }
 func (UnimplementedTeacherServiceServer) GetTeacher(context.Context, *GetTeacherRequest) (*Teacher, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTeacher not implemented")
+}
+func (UnimplementedTeacherServiceServer) UpdateTeacher(context.Context, *Teacher) (*Teacher, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateTeacher not implemented")
 }
 func (UnimplementedTeacherServiceServer) GetSubject(context.Context, *GetSubjectRequest) (*Subject, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetSubject not implemented")
@@ -219,6 +233,24 @@ func _TeacherService_GetTeacher_Handler(srv interface{}, ctx context.Context, de
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(TeacherServiceServer).GetTeacher(ctx, req.(*GetTeacherRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TeacherService_UpdateTeacher_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Teacher)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TeacherServiceServer).UpdateTeacher(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/teacherpb.TeacherService/UpdateTeacher",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TeacherServiceServer).UpdateTeacher(ctx, req.(*Teacher))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -331,6 +363,10 @@ var TeacherService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTeacher",
 			Handler:    _TeacherService_GetTeacher_Handler,
+		},
+		{
+			MethodName: "UpdateTeacher",
+			Handler:    _TeacherService_UpdateTeacher_Handler,
 		},
 		{
 			MethodName: "GetSubject",

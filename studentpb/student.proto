@@ -39,7 +39,11 @@ message RegisterStudentRequest {
 }
 
 message GetStudentRequest {
-    string student_id = 1;
+    oneof by {
+        string student_id = 1;
+        string email = 2;
+        string phone_number = 3;
+    }
 }
 
 message DeleteStudentRequest {

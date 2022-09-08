@@ -3,6 +3,7 @@ syntax = "proto3";
 package journalpb;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/bektosh03/crmprotos/journalpb";
 
@@ -11,6 +12,9 @@ service JournalService {
   rpc GetJournal (GetJournalRequest) returns (Journal);
   rpc UpdateJournal (Journal) returns (Journal);
   rpc DeleteJournal (DeleteJournalRequest) returns (google.protobuf.Empty);
+  rpc MarkStudent (MarkStudentRequest) returns (google.protobuf.Empty);
+  rpc SetStudentAttendance (SetStudentAttendanceRequest) returns (google.protobuf.Empty);
+  rpc GetStudentMarks (GetStudentMarksRequest) returns (MarkList);
 }
 
 message CreateJournalRequest {
@@ -34,4 +38,35 @@ message GetJournalRequest {
 
 message DeleteJournalRequest {
   string journal_id = 1;
+}
+
+message MarkStudentRequest {
+  int32 mark = 1;
+  string student_id = 2;
+  string schedule_id = 3;
+}
+
+message SetStudentAttendanceRequest {
+  bool attended = 1;
+  string student_id = 2;
+  string schedule_id = 3;
+}
+
+message GetStudentMarksRequest {
+  TimeRange time_range = 1;
+}
+
+message TimeRange {
+  google.protobuf.Timestamp start = 1;
+  google.protobuf.Timestamp end = 2;
+}
+
+message Mark {
+  string student_id = 1;
+  string schedule_id = 2;
+  int32 mark = 3;
+}
+
+message MarkList {
+  repeated Mark marks = 1;
 }
