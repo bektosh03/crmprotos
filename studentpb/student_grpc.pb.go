@@ -33,6 +33,7 @@ type StudentServiceClient interface {
 	DeleteGroup(ctx context.Context, in *DeleteGroupRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateGroup(ctx context.Context, in *Group, opts ...grpc.CallOption) (*Group, error)
 	ListGroups(ctx context.Context, in *ListGroupsRequest, opts ...grpc.CallOption) (*GroupList, error)
+	GetGroupStudents(ctx context.Context, in *GetGroupStudentsRequest, opts ...grpc.CallOption) (*StudentList, error)
 }
 
 type studentServiceClient struct {
@@ -133,6 +134,15 @@ func (c *studentServiceClient) ListGroups(ctx context.Context, in *ListGroupsReq
 	return out, nil
 }
 
+func (c *studentServiceClient) GetGroupStudents(ctx context.Context, in *GetGroupStudentsRequest, opts ...grpc.CallOption) (*StudentList, error) {
+	out := new(StudentList)
+	err := c.cc.Invoke(ctx, "/studentpb.StudentService/GetGroupStudents", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // StudentServiceServer is the server API for StudentService service.
 // All implementations must embed UnimplementedStudentServiceServer
 // for forward compatibility
@@ -147,6 +157,7 @@ type StudentServiceServer interface {
 	DeleteGroup(context.Context, *DeleteGroupRequest) (*emptypb.Empty, error)
 	UpdateGroup(context.Context, *Group) (*Group, error)
 	ListGroups(context.Context, *ListGroupsRequest) (*GroupList, error)
+	GetGroupStudents(context.Context, *GetGroupStudentsRequest) (*StudentList, error)
 	mustEmbedUnimplementedStudentServiceServer()
 }
 
@@ -183,6 +194,9 @@ func (UnimplementedStudentServiceServer) UpdateGroup(context.Context, *Group) (*
 }
 func (UnimplementedStudentServiceServer) ListGroups(context.Context, *ListGroupsRequest) (*GroupList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListGroups not implemented")
+}
+func (UnimplementedStudentServiceServer) GetGroupStudents(context.Context, *GetGroupStudentsRequest) (*StudentList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGroupStudents not implemented")
 }
 func (UnimplementedStudentServiceServer) mustEmbedUnimplementedStudentServiceServer() {}
 
@@ -377,6 +391,24 @@ func _StudentService_ListGroups_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StudentService_GetGroupStudents_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGroupStudentsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StudentServiceServer).GetGroupStudents(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/studentpb.StudentService/GetGroupStudents",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StudentServiceServer).GetGroupStudents(ctx, req.(*GetGroupStudentsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // StudentService_ServiceDesc is the grpc.ServiceDesc for StudentService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -423,6 +455,10 @@ var StudentService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListGroups",
 			Handler:    _StudentService_ListGroups_Handler,
+		},
+		{
+			MethodName: "GetGroupStudents",
+			Handler:    _StudentService_GetGroupStudents_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

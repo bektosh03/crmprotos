@@ -17,6 +17,7 @@ service StudentService {
     rpc DeleteGroup (DeleteGroupRequest) returns (google.protobuf.Empty);
     rpc UpdateGroup (Group) returns (Group);
     rpc ListGroups (ListGroupsRequest) returns (GroupList);
+    rpc GetGroupStudents (GetGroupStudentsRequest) returns (StudentList);
 }
 
 message Student{
@@ -85,4 +86,8 @@ message ListGroupsRequest {
 
 message GroupList {
     repeated Group groups = 1;
+}
+
+message GetGroupStudentsRequest {
+    string group_id = 1;
 }

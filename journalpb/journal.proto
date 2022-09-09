@@ -14,14 +14,13 @@ service JournalService {
   rpc DeleteJournal (DeleteJournalRequest) returns (google.protobuf.Empty);
   rpc MarkStudent (MarkStudentRequest) returns (google.protobuf.Empty);
   rpc SetStudentAttendance (SetStudentAttendanceRequest) returns (google.protobuf.Empty);
-  rpc GetStudentMarks (GetStudentMarksRequest) returns (MarkList);
+  rpc GetStudentJournal (GetStudentJournalRequest) returns (JournalList);
 }
 
 message CreateJournalRequest {
   string schedule_id = 1;
-  string student_id = 2;
-  bool attended = 3;
-  int32 mark = 4;
+  google.protobuf.Timestamp date = 2;
+  repeated string student_ids = 3;
 }
 
 message Journal {
@@ -30,6 +29,11 @@ message Journal {
   string student_id = 3;
   bool attended = 4;
   int32 mark = 5;
+  google.protobuf.Timestamp date = 6;
+}
+
+message JournalList {
+  repeated Journal journals = 1;
 }
 
 message GetJournalRequest {
@@ -43,30 +47,20 @@ message DeleteJournalRequest {
 message MarkStudentRequest {
   int32 mark = 1;
   string student_id = 2;
-  string schedule_id = 3;
+  string journal_id = 3;
 }
 
 message SetStudentAttendanceRequest {
   bool attended = 1;
   string student_id = 2;
-  string schedule_id = 3;
+  string journal_id = 3;
 }
 
-message GetStudentMarksRequest {
+message GetStudentJournalRequest {
   TimeRange time_range = 1;
 }
 
 message TimeRange {
   google.protobuf.Timestamp start = 1;
   google.protobuf.Timestamp end = 2;
-}
-
-message Mark {
-  string student_id = 1;
-  string schedule_id = 2;
-  int32 mark = 3;
-}
-
-message MarkList {
-  repeated Mark marks = 1;
 }
