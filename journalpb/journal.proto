@@ -9,12 +9,13 @@ option go_package = "github.com/bektosh03/crmprotos/journalpb";
 
 service JournalService {
   rpc CreateJournal (CreateJournalRequest) returns (Journal);
-  rpc GetJournalEntry (GetJournalEntryRequest) returns (Entry);
+  rpc GetJournal (GetJournalRequest) returns (Journal);
   rpc UpdateJournal (Journal) returns (Journal);
   rpc DeleteJournal (DeleteJournalRequest) returns (google.protobuf.Empty);
   rpc MarkStudent (MarkStudentRequest) returns (google.protobuf.Empty);
   rpc SetStudentAttendance (SetStudentAttendanceRequest) returns (google.protobuf.Empty);
   rpc GetStudentJournalEntries (GetStudentJournalEntriesRequest) returns (Entries);
+  rpc GetTeacherJournalEntries (GetTeacherJournalEntriesRequest) returns (Entries);
 }
 
 message CreateJournalRequest {
@@ -42,7 +43,7 @@ message Entries {
   repeated Entry entries = 1;
 }
 
-message GetJournalEntryRequest {
+message GetJournalRequest {
   string journal_id = 1;
 }
 
@@ -63,7 +64,13 @@ message SetStudentAttendanceRequest {
 }
 
 message GetStudentJournalEntriesRequest {
-  TimeRange time_range = 1;
+  string student_id = 1;
+  TimeRange time_range = 2;
+}
+
+message GetTeacherJournalEntriesRequest {
+  string teacher_id = 1;
+  TimeRange time_range = 2;
 }
 
 message TimeRange {

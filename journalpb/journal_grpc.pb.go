@@ -24,12 +24,13 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type JournalServiceClient interface {
 	CreateJournal(ctx context.Context, in *CreateJournalRequest, opts ...grpc.CallOption) (*Journal, error)
-	GetJournalEntry(ctx context.Context, in *GetJournalEntryRequest, opts ...grpc.CallOption) (*Entry, error)
+	GetJournal(ctx context.Context, in *GetJournalRequest, opts ...grpc.CallOption) (*Journal, error)
 	UpdateJournal(ctx context.Context, in *Journal, opts ...grpc.CallOption) (*Journal, error)
 	DeleteJournal(ctx context.Context, in *DeleteJournalRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	MarkStudent(ctx context.Context, in *MarkStudentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	SetStudentAttendance(ctx context.Context, in *SetStudentAttendanceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetStudentJournalEntries(ctx context.Context, in *GetStudentJournalEntriesRequest, opts ...grpc.CallOption) (*Entries, error)
+	GetTeacherJournalEntries(ctx context.Context, in *GetTeacherJournalEntriesRequest, opts ...grpc.CallOption) (*Entries, error)
 }
 
 type journalServiceClient struct {
@@ -49,9 +50,9 @@ func (c *journalServiceClient) CreateJournal(ctx context.Context, in *CreateJour
 	return out, nil
 }
 
-func (c *journalServiceClient) GetJournalEntry(ctx context.Context, in *GetJournalEntryRequest, opts ...grpc.CallOption) (*Entry, error) {
-	out := new(Entry)
-	err := c.cc.Invoke(ctx, "/journalpb.JournalService/GetJournalEntry", in, out, opts...)
+func (c *journalServiceClient) GetJournal(ctx context.Context, in *GetJournalRequest, opts ...grpc.CallOption) (*Journal, error) {
+	out := new(Journal)
+	err := c.cc.Invoke(ctx, "/journalpb.JournalService/GetJournal", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -103,17 +104,27 @@ func (c *journalServiceClient) GetStudentJournalEntries(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *journalServiceClient) GetTeacherJournalEntries(ctx context.Context, in *GetTeacherJournalEntriesRequest, opts ...grpc.CallOption) (*Entries, error) {
+	out := new(Entries)
+	err := c.cc.Invoke(ctx, "/journalpb.JournalService/GetTeacherJournalEntries", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // JournalServiceServer is the server API for JournalService service.
 // All implementations must embed UnimplementedJournalServiceServer
 // for forward compatibility
 type JournalServiceServer interface {
 	CreateJournal(context.Context, *CreateJournalRequest) (*Journal, error)
-	GetJournalEntry(context.Context, *GetJournalEntryRequest) (*Entry, error)
+	GetJournal(context.Context, *GetJournalRequest) (*Journal, error)
 	UpdateJournal(context.Context, *Journal) (*Journal, error)
 	DeleteJournal(context.Context, *DeleteJournalRequest) (*emptypb.Empty, error)
 	MarkStudent(context.Context, *MarkStudentRequest) (*emptypb.Empty, error)
 	SetStudentAttendance(context.Context, *SetStudentAttendanceRequest) (*emptypb.Empty, error)
 	GetStudentJournalEntries(context.Context, *GetStudentJournalEntriesRequest) (*Entries, error)
+	GetTeacherJournalEntries(context.Context, *GetTeacherJournalEntriesRequest) (*Entries, error)
 	mustEmbedUnimplementedJournalServiceServer()
 }
 
@@ -124,8 +135,8 @@ type UnimplementedJournalServiceServer struct {
 func (UnimplementedJournalServiceServer) CreateJournal(context.Context, *CreateJournalRequest) (*Journal, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateJournal not implemented")
 }
-func (UnimplementedJournalServiceServer) GetJournalEntry(context.Context, *GetJournalEntryRequest) (*Entry, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetJournalEntry not implemented")
+func (UnimplementedJournalServiceServer) GetJournal(context.Context, *GetJournalRequest) (*Journal, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetJournal not implemented")
 }
 func (UnimplementedJournalServiceServer) UpdateJournal(context.Context, *Journal) (*Journal, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateJournal not implemented")
@@ -141,6 +152,9 @@ func (UnimplementedJournalServiceServer) SetStudentAttendance(context.Context, *
 }
 func (UnimplementedJournalServiceServer) GetStudentJournalEntries(context.Context, *GetStudentJournalEntriesRequest) (*Entries, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStudentJournalEntries not implemented")
+}
+func (UnimplementedJournalServiceServer) GetTeacherJournalEntries(context.Context, *GetTeacherJournalEntriesRequest) (*Entries, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTeacherJournalEntries not implemented")
 }
 func (UnimplementedJournalServiceServer) mustEmbedUnimplementedJournalServiceServer() {}
 
@@ -173,20 +187,20 @@ func _JournalService_CreateJournal_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _JournalService_GetJournalEntry_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetJournalEntryRequest)
+func _JournalService_GetJournal_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetJournalRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(JournalServiceServer).GetJournalEntry(ctx, in)
+		return srv.(JournalServiceServer).GetJournal(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/journalpb.JournalService/GetJournalEntry",
+		FullMethod: "/journalpb.JournalService/GetJournal",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(JournalServiceServer).GetJournalEntry(ctx, req.(*GetJournalEntryRequest))
+		return srv.(JournalServiceServer).GetJournal(ctx, req.(*GetJournalRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -281,6 +295,24 @@ func _JournalService_GetStudentJournalEntries_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _JournalService_GetTeacherJournalEntries_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTeacherJournalEntriesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(JournalServiceServer).GetTeacherJournalEntries(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/journalpb.JournalService/GetTeacherJournalEntries",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(JournalServiceServer).GetTeacherJournalEntries(ctx, req.(*GetTeacherJournalEntriesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // JournalService_ServiceDesc is the grpc.ServiceDesc for JournalService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -293,8 +325,8 @@ var JournalService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _JournalService_CreateJournal_Handler,
 		},
 		{
-			MethodName: "GetJournalEntry",
-			Handler:    _JournalService_GetJournalEntry_Handler,
+			MethodName: "GetJournal",
+			Handler:    _JournalService_GetJournal_Handler,
 		},
 		{
 			MethodName: "UpdateJournal",
@@ -315,6 +347,10 @@ var JournalService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStudentJournalEntries",
 			Handler:    _JournalService_GetStudentJournalEntries_Handler,
+		},
+		{
+			MethodName: "GetTeacherJournalEntries",
+			Handler:    _JournalService_GetTeacherJournalEntries_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
