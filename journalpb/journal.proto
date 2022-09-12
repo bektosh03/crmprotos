@@ -30,7 +30,7 @@ message Journal {
 }
 
 message Entry {
-  string id = 1;
+  string journal_id = 1;
   string schedule_id = 2;
   string student_id = 3;
   bool attended = 4;
