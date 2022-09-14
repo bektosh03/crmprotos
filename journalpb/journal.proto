@@ -22,12 +22,14 @@ message CreateJournalRequest {
   string schedule_id = 1;
   google.protobuf.Timestamp date = 2;
   repeated string student_ids = 3;
+  string teacher_id = 4;
 }
 
 message Journal {
   string id = 1;
   string schedule_id = 2;
   google.protobuf.Timestamp date = 3;
+  string teacher_id = 4;
 }
 
 message Entry {
